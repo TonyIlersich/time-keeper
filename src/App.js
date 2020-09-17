@@ -7,11 +7,7 @@ class App extends React.Component {
 	handlerId = null;
 
 	state = {
-		tasks: [{
-			name: 'dsiapjfdiopajgidopasjfidopasjidpnaui9pbvdu9pageui9dagui9pdhau9gheuwa90hgeu9d0hagu9edawu9g0hea90hg8u9e0dagedagedawgedafeagewag',
-			duration: 0,
-			active: true,
-		}],
+		tasks: [],
 	};
 
 	componentDidMount() {
