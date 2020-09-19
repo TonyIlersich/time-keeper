@@ -5,14 +5,15 @@ import { NewTaskForm } from './Components/NewTaskForm';
 
 class App extends React.Component {
 	handlerId = null;
+	lastUpdateTime = null;
 
 	state = {
 		tasks: [],
 	};
 
 	componentDidMount() {
-		const interval = 500;
-		this.handlerId = setInterval(() => this.onTick(interval), interval);
+		this.lastUpdateTime = Date.now();
+		this.handlerId = setInterval(() => this.onTick(), 500);
 	}
 
 	componentWillUnmount() {
@@ -39,7 +40,10 @@ class App extends React.Component {
 		);
 	}
 
-	onTick = deltaMs => {
+	onTick = () => {
+		const now = Date.now();
+		const deltaMs = now - this.lastUpdateTime;
+		this.lastUpdateTime = now;
 		const tasks = this.state.tasks.map(t => ({
 			...t,
 			...(t.active ? { duration: t.duration + deltaMs } : {}
