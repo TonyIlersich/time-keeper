@@ -2,18 +2,21 @@ import React from 'react';
 import { Row, Column } from './Components/FlexBox';
 import { TaskView } from './Components/TaskView.jsx';
 import { NewTaskForm } from './Components/NewTaskForm';
+import { DailyPieChart } from './Components/DailyPieChart';
 
 class App extends React.Component {
 	handlerId = null;
 	lastUpdateTime = null;
+	dayHistory = [];
 
 	state = {
+		dayOfWeek: new Date().getDay(),
 		tasks: [],
 	};
 
 	componentDidMount() {
 		this.lastUpdateTime = Date.now();
-		this.handlerId = setInterval(() => this.onTick(), 500);
+		this.handlerId = setInterval(() => this.onTick(), 100);
 	}
 
 	componentWillUnmount() {
@@ -35,21 +38,33 @@ class App extends React.Component {
 					<NewTaskForm onCreate={this.onCreateTask}/>
 				</Column>
 				<Column>
+					<DailyPieChart tasks={this.state.tasks}/>
 				</Column>
 			</Row>
 		);
 	}
 
 	onTick = () => {
-		const now = Date.now();
-		const deltaMs = now - this.lastUpdateTime;
-		this.lastUpdateTime = now;
-		const tasks = this.state.tasks.map(t => ({
-			...t,
-			...(t.active ? { duration: t.duration + deltaMs } : {}
-			),
-		}));
-		this.setState({ tasks });
+		if (this.state.dayOfWeek !== new Date().getDay()) {
+			this.onNewDay();
+		} else {
+			const now = Date.now();
+			const deltaMs = now - this.lastUpdateTime;
+			this.lastUpdateTime = now;
+			const tasks = this.state.tasks.map(t => ({
+				...t,
+				...(t.active ? { duration: t.duration + deltaMs } : {}),
+			}));
+			this.setState({ tasks });
+		}
+	};
+
+	onNewDay = () => {
+		this.dayHistory.push(this.state.tasks);
+		this.setState({
+			tasks: [],
+			dayOfWeek: new Date().getDay(),
+		});
 	};
 
 	onCreateTask = task => {
@@ -60,7 +75,7 @@ class App extends React.Component {
 			...t,
 			active: false,
 		}));
-		tasks.push(task);
+		tasks.push({ ...task, active: true });
 		this.setState({ tasks });
 	};
 

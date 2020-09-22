@@ -5,6 +5,7 @@ import { Row } from './FlexBox';
 import { Input } from './Input';
 import { Text } from './Text';
 import { Button } from './Button';
+import { getNewTaskColor } from '../Utils/ColorUtils';
 
 export class NewTaskForm extends React.Component {
 	initialState = {
@@ -26,22 +27,25 @@ export class NewTaskForm extends React.Component {
 						onChange={ev => this.setState({ name: ev.target.value })}
 					/>
 					<Text>{this.state.error}</Text>
-					<Button onClick={() => {
-						try {
-							this.props.onCreate({
-								name: this.state.name,
-								duration: 0,
-								active: true,
-							});
-							this.setState(this.initialState);
-						} catch (err) {
-							this.setState({ error: err.message });
-						}
-					}}>
+					<Button onClick={this.onCreate}>
 						<Feather.Plus/>
 					</Button>
 				</Row>
 			</Container>
 		);
+	}
+
+	onCreate = () => {
+		try {
+			this.props.onCreate({
+				name: this.state.name,
+				duration: 0,
+				active: false,
+				color: getNewTaskColor(),
+			});
+			this.setState(this.initialState);
+		} catch (err) {
+			this.setState({ error: err.message });
+		}
 	}
 }

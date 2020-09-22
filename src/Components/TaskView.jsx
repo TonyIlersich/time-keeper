@@ -7,7 +7,7 @@ import { Clock } from './Clock';
 import { Button } from './Button';
 
 export const TaskView = props => (
-	<Container>
+	<Container color={props.task.color}>
 		<Row>
 			<Column style={{ justifyContent: 'space-evenly' }}>
 				<Text title={props.task.name}>{props.task.name}</Text>

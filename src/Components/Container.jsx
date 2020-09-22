@@ -10,4 +10,5 @@ export const Container = styled(Row)`
 	flex-grow: 0;
 	align-items: center;
 	justify-content: center;
+	background-color: ${props => props.color || 'transparent'};
 `;
