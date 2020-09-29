@@ -5,7 +5,7 @@ import { Row } from './FlexBox';
 import { Input } from './Input';
 import { Text } from './Text';
 import { Button } from './Button';
-import { getNewTaskColor } from '../Utils/ColorUtils';
+import { createTask } from '../Utils/Task';
 
 export class NewTaskForm extends React.Component {
 	initialState = {
@@ -35,7 +35,7 @@ export class NewTaskForm extends React.Component {
 					/>
 					<Text>{this.state.error}</Text>
 					<Button onClick={this.onCreate}>
-						<Feather.Plus/>
+						<Feather.Plus />
 					</Button>
 				</Row>
 			</Container>
@@ -43,13 +43,9 @@ export class NewTaskForm extends React.Component {
 	}
 
 	onCreate = () => {
+		if (!this.state.name) return;
 		try {
-			this.props.onCreate({
-				name: this.state.name,
-				duration: 0,
-				active: false,
-				color: getNewTaskColor(),
-			});
+			this.props.onCreate(createTask({ name: this.state.name }));
 			this.setState(this.initialState);
 		} catch (err) {
 			this.setState({ error: err.message });

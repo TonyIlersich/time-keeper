@@ -1,13 +1,14 @@
 import { DailyPieChart } from './Components/DailyPieChart';
-import { NewTaskForm } from './Components/NewTaskForm';
 import { Row, Column } from './Components/FlexBox';
-import { TaskView } from './Components/TaskView.jsx';
+import TaskListView from './Components/TaskListView';
+import TodoListView from './Components/TodoListView';
 import { withCookies } from 'react-cookie';
 import dayjs from 'dayjs';
 import React from 'react';
 import timezone from 'dayjs/plugin/timezone';
 import TopBar from './Components/TopBar';
 import utc from 'dayjs/plugin/utc';
+import { createTask } from './Utils/Task';
 
 dayjs.extend(utc)
 dayjs.extend(timezone);
@@ -20,6 +21,7 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			todos: props.cookies.get('todos') || [],
 			tasks: props.cookies.get('tasks') || [],
 		};
 	}
@@ -35,26 +37,48 @@ class App extends React.Component {
 	render() {
 		return (
 			<Column>
-				<TopBar onClickTrash={this.onClearTasks} />
+				<TopBar onClickTrash={this.onClear} />
 				<Row>
-					<Column>
-						{this.state.tasks.map((t, i) => (
-							<TaskView
-								key={i}
-								task={t}
-								onPlay={this.onSwitchTask}
-								onPause={this.onPauseTask}
+					<Column style={{ flexGrow: 3 / 2 }}>
+						<Row>
+							<TodoListView
+								todos={this.state.todos}
+								onCreateTodo={this.onCreateTodo}
+								onPromoteTodo={this.onPromoteTodo}
 							/>
-						))}
-						<NewTaskForm onCreate={this.onCreateTask}/>
+							<TaskListView
+								tasks={this.state.tasks}
+								onSwitchTask={this.onSwitchTask}
+								onPauseTask={this.onPauseTask}
+								onCreateTask={this.onCreateTask}
+							/>
+							{/* TODO: create list for completions */}
+						</Row>
 					</Column>
 					<Column>
-						<DailyPieChart tasks={this.state.tasks}/>
+						<DailyPieChart tasks={this.state.tasks} />
 					</Column>
 				</Row>
 			</Column>
 		);
 	}
+
+	// TODO: prevent todo v. task name conflict
+	onCreateTodo = todo => {
+		if (this.state.todos.some(t => t.name.toLowerCase() === todo.name.toLowerCase())) {
+			throw new Error(`Todo name "${todo.name}" is already in use.`);
+		};
+		const todos = [...this.state.todos];
+		todos.push(todo);
+		this.save({ todos });
+	};
+
+	onPromoteTodo = todo => {
+		const todos = this.state.todos.filter(t => t.name !== todo.name);
+		const tasks = this.state.tasks.map(t => ({ ...t, active: false }));
+		tasks.push(createTask({ ...todo, active: true }));
+		this.save({ todos, tasks });
+	};
 
 	onTick = () => {
 		const now = dayjs();
@@ -64,10 +88,12 @@ class App extends React.Component {
 		} else {
 			this.props.cookies.set('lastUpdateTime', now.clone());
 			const deltaMs = now.diff(lastUpdateTime);
-			this.saveTasks(this.state.tasks.map(t => ({
-				...t,
-				...(t.active ? { duration: t.duration + deltaMs } : {}),
-			})));
+			this.save({
+				tasks: this.state.tasks.map(t => ({
+					...t,
+					...(t.active ? { duration: t.duration + deltaMs } : {}),
+				})),
+			});
 		}
 	};
 
@@ -88,31 +114,38 @@ class App extends React.Component {
 			active: false,
 		}));
 		tasks.push({ ...task, active: true });
-		this.saveTasks(tasks);
+		this.save({ tasks });
 	};
 
 	onPauseTask = () => {
-		this.saveTasks(this.state.tasks.map(t => ({
-			...t,
-			active: false,
-		})));
+		this.save({
+			tasks: this.state.tasks.map(t => ({
+				...t,
+				active: false,
+			})),
+		});
 	};
 
 	onSwitchTask = target => {
-		this.saveTasks(this.state.tasks.map(t => ({
-			...t,
-			active: t === target,
-		})));
+		this.save({
+			tasks: this.state.tasks.map(t => ({
+				...t,
+				active: t === target,
+			})),
+		});
 	};
 
-	onClearTasks = () => {
+	onClear = () => {
 		this.props.cookies.remove('lastUpdateTime');
-		this.saveTasks([]);
-	}
+		this.save({ todos: [], tasks: [] });
+	};
 
-	saveTasks(tasks) {
+	save({ todos, tasks }) {
+		todos || (todos = this.state.todos);
+		tasks || (tasks = this.state.tasks);
+		this.props.cookies.set('todos', todos);
 		this.props.cookies.set('tasks', tasks);
-		this.setState({ tasks });
+		this.setState({ todos, tasks });
 	}
 }
 
