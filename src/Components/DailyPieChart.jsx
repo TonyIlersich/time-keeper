@@ -7,6 +7,9 @@ const minDegree = 15;
 const minValue = totalValue * minDegree / 360;
 
 const StyledPieChart = styled(PieChart)`
+	margin: -10% 0;
+	box-sizing: border-box;
+	z-index: -10;
 `;
 
 export const DailyPieChart = ({ tasks }) => {
@@ -30,10 +33,9 @@ export const DailyPieChart = ({ tasks }) => {
 			background='lightgray'
 			data={data}
 			totalValue={totalValue}
-			startAngle={-90}
 			label={labelProps => labelProps.dataEntry.title}
 			labelStyle={idx => ({
-				fontSize: 10 / (1 + Math.pow(data[idx].title.length, .5)),
+				fontSize: Math.min(40 / data[idx].title.length, 5),
 				fill: data[idx].color,
 			})}
 			radius={25}

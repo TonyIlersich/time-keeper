@@ -6,7 +6,6 @@ export const Container = styled(Row)`
 	border-radius: 6px;
 	margin: 4px;
 	padding: 8px;
-	display: flex;
 	flex-grow: 0;
 	align-items: center;
 	justify-content: center;

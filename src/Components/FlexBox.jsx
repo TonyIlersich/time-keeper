@@ -5,7 +5,7 @@ export const FlexBox = styled.div`
 	flex-grow: 1;
 	flex-shrink: 1;
 	flex-basis: 0px;
-	box-shadow: border-box;
+	box-sizing: border-box;
 	min-width: 0px;
 `;
 
