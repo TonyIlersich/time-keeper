@@ -1,16 +1,10 @@
 import React from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
-import styled from 'styled-components';
+import FixedAspect from './FixedAspect';
 
 const totalValue = 24 * 60 * 60 * 1000;
 const minDegree = 15;
 const minValue = totalValue * minDegree / 360;
-
-const StyledPieChart = styled(PieChart)`
-	margin: -10% 0;
-	box-sizing: border-box;
-	z-index: -10;
-`;
 
 export const DailyPieChart = ({ tasks }) => {
 	const other = {
@@ -29,20 +23,22 @@ export const DailyPieChart = ({ tasks }) => {
 			})),
 	];
 	return (
-		<StyledPieChart
-			background='lightgray'
-			data={data}
-			totalValue={totalValue}
-			label={labelProps => labelProps.dataEntry.title}
-			labelStyle={idx => ({
-				fontSize: Math.min(40 / data[idx].title.length, 5),
-				fill: data[idx].color,
-			})}
-			radius={25}
-			lineWidth={80}
-			paddingAngle={1}
-			labelPosition={112}
-			animate
-		/>
+		<FixedAspect ratio={16 / 9}>
+			<PieChart
+				background='lightgray'
+				data={data}
+				totalValue={totalValue}
+				label={labelProps => labelProps.dataEntry.title}
+				labelStyle={idx => ({
+					fontSize: Math.min(70 / data[idx].title.length, 8),
+					fill: data[idx].color,
+				})}
+				radius={40}
+				lineWidth={80}
+				paddingAngle={1}
+				labelPosition={112}
+				animate
+			/>
+		</FixedAspect>
 	);
 };
