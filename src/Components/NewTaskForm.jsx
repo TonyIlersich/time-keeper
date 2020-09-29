@@ -24,6 +24,13 @@ export class NewTaskForm extends React.Component {
 					<Input
 						type='text'
 						value={this.state.name}
+						onKeyDown={e => {
+							if (e.key === 'Enter' && !e.repeat) {
+								e.preventDefault();
+								e.stopPropagation();
+								this.onCreate();
+							}
+						}}
 						onChange={ev => this.setState({ name: ev.target.value })}
 					/>
 					<Text>{this.state.error}</Text>
