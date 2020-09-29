@@ -5,5 +5,6 @@ export const Text = styled.span`
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	font-size: larger;
+	font-size: 16px;
+	box-sizing: border-box;
 `;
