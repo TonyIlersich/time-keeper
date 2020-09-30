@@ -18,7 +18,7 @@ export default ({ todo, onPromote, onDelete }) => (
 	<StyledContainer color={todo.color}>
 		<Row>
 			<TaskInfo task={todo} />
-			<StyledButton onClick={onPromote}>
+			<StyledButton onClick={() => onPromote(todo)}>
 				<Feather.ArrowRight />
 			</StyledButton>
 			<StyledButton onClick={() => onDelete(todo)}>
