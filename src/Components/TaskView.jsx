@@ -10,13 +10,20 @@ const StyledContainer = styled(Container)`
 	flex-basis: 70px;
 `;
 
-export const TaskView = ({ task, onPause, onPlay }) => (
+const StyledButton = styled(Button)`
+	margin-left: 4px;
+`;
+
+export const TaskView = ({ task, onPause, onPlay, onDelete }) => (
 	<StyledContainer color={task.color}>
 		<Row>
 			<TaskInfo task={task} />
-			<Button onClick={() => task.active ? onPause() : onPlay(task)}>
+			<StyledButton onClick={() => task.active ? onPause() : onPlay(task)}>
 				{task.active ? <Feather.Pause /> : <Feather.Play />}
-			</Button>
+			</StyledButton>
+			<StyledButton onClick={() => onDelete(task)}>
+				<Feather.X />
+			</StyledButton>
 		</Row>
 	</StyledContainer>
 );

@@ -8,6 +8,8 @@ const ButtonContainer = styled(Container)`
 	cursor: pointer;
 	transition: background-color .2s;
 	margin: 0;
+	width: 44px;
+	height: 44px;
 
 	&:hover {
 		background-color: #eeeeee;
@@ -19,8 +21,8 @@ const ButtonContainer = styled(Container)`
 	}
 `;
 
-export const Button = ({ children, onClick }) => (
-	<ButtonContainer onClick={onClick}>
+export const Button = ({ className, children, onClick }) => (
+	<ButtonContainer className={className} onClick={onClick}>
 		{children}
 	</ButtonContainer>
 );

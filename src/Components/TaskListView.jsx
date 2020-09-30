@@ -3,7 +3,7 @@ import { Column } from './FlexBox';
 import { NewTaskForm } from './NewTaskForm';
 import { TaskView } from './TaskView';
 
-export default ({ tasks, onSwitchTask, onPauseTask, onCreateTask }) => (
+export default ({ tasks, onSwitchTask, onPauseTask, onCreateTask, onDeleteTask }) => (
 	<Column>
 		{tasks.map((t, i) => (
 			<TaskView
@@ -11,6 +11,7 @@ export default ({ tasks, onSwitchTask, onPauseTask, onCreateTask }) => (
 				task={t}
 				onPlay={onSwitchTask}
 				onPause={onPauseTask}
+				onDelete={onDeleteTask}
 			/>
 		))}
 		<NewTaskForm onCreate={onCreateTask} />

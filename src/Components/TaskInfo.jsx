@@ -5,7 +5,7 @@ import { Clock } from './Clock';
 import styled from 'styled-components';
 
 const TextColumn = styled(Column)`
-	padding: 2px 10px 2px 4px;
+	padding: 0px 10px 0px 4px;
 `;
 
 export default ({ task }) => (

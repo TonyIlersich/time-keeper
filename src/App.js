@@ -45,12 +45,14 @@ class App extends React.Component {
 								todos={this.state.todos}
 								onCreateTodo={this.onCreateTodo}
 								onPromoteTodo={this.onPromoteTodo}
+								onDeleteTodo={this.onDeleteTodo}
 							/>
 							<TaskListView
 								tasks={this.state.tasks}
 								onSwitchTask={this.onSwitchTask}
 								onPauseTask={this.onPauseTask}
 								onCreateTask={this.onCreateTask}
+								onDeleteTask={this.onDeleteTask}
 							/>
 							{/* TODO: create list for completions */}
 						</Row>
@@ -61,6 +63,10 @@ class App extends React.Component {
 				</Row>
 			</Column>
 		);
+	}
+
+	onDeleteTodo = todo => {
+		this.save({ todos: this.state.todos.filter(t => t.name !== todo.name) });
 	}
 
 	// TODO: prevent todo v. task name conflict
@@ -84,17 +90,17 @@ class App extends React.Component {
 		const now = dayjs();
 		const lastUpdateTime = this.props.cookies.get('lastUpdateTime') || now;
 		if (dayjs().startOf('day').isAfter(lastUpdateTime)) {
+			console.log('here');
 			this.onNewDay();
-		} else {
-			this.props.cookies.set('lastUpdateTime', now.clone());
-			const deltaMs = now.diff(lastUpdateTime);
-			this.save({
-				tasks: this.state.tasks.map(t => ({
-					...t,
-					...(t.active ? { duration: t.duration + deltaMs } : {}),
-				})),
-			});
 		}
+		this.props.cookies.set('lastUpdateTime', now.clone());
+		const deltaMs = now.diff(lastUpdateTime);
+		this.save({
+			tasks: this.state.tasks.map(t => ({
+				...t,
+				...(t.active ? { duration: t.duration + deltaMs } : {}),
+			})),
+		});
 	};
 
 	onNewDay = () => {
@@ -104,6 +110,10 @@ class App extends React.Component {
 		// 	tasks: [],
 		// });
 	};
+
+	onDeleteTask = task => {
+		this.save({ tasks: this.state.tasks.filter(t => t.name !== task.name) });
+	}
 
 	onCreateTask = task => {
 		if (this.state.tasks.some(t => t.name.toLowerCase() === task.name.toLowerCase())) {

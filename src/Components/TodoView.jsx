@@ -10,13 +10,20 @@ const StyledContainer = styled(Container)`
 	flex-basis: 70px;
 `;
 
-export default ({ todo, onClickRight }) => (
+const StyledButton = styled(Button)`
+	margin-left: 4px;
+`;
+
+export default ({ todo, onPromote, onDelete }) => (
 	<StyledContainer color={todo.color}>
 		<Row>
 			<TaskInfo task={todo} />
-			<Button onClick={onClickRight}>
+			<StyledButton onClick={onPromote}>
 				<Feather.ArrowRight />
-			</Button>
+			</StyledButton>
+			<StyledButton onClick={() => onDelete(todo)}>
+				<Feather.X />
+			</StyledButton>
 		</Row>
 	</StyledContainer>
 );
