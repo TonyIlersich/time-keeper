@@ -7,4 +7,5 @@ export const Text = styled.span`
 	text-overflow: ellipsis;
 	font-size: 16px;
 	box-sizing: border-box;
+	font-weight: ${props => props.bold ? 'bold' : 'normal'};
 `;

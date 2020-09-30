@@ -1,21 +1,22 @@
 import React from 'react';
 import * as Feather from 'react-feather';
 import { Container } from './Container';
-import { Row, Column } from './FlexBox';
-import { Text } from './Text';
-import { Clock } from './Clock';
+import { Row } from './FlexBox';
 import { Button } from './Button';
+import styled from 'styled-components';
+import TaskInfo from './TaskInfo';
 
-export const TaskView = props => (
-	<Container color={props.task.color}>
+const StyledContainer = styled(Container)`
+	flex-basis: 70px;
+`;
+
+export const TaskView = ({ task, onPause, onPlay }) => (
+	<StyledContainer color={task.color}>
 		<Row>
-			<Column style={{ justifyContent: 'space-evenly' }}>
-				<Text title={props.task.name}>{props.task.name}</Text>
-				<Clock ms={props.task.duration}/>
-			</Column>
-			<Button onClick={() => props.task.active ? props.onPause() : props.onPlay(props.task)}>
-				{props.task.active ? <Feather.Pause/> : <Feather.Play/>}
+			<TaskInfo task={task} />
+			<Button onClick={() => task.active ? onPause() : onPlay(task)}>
+				{task.active ? <Feather.Pause /> : <Feather.Play />}
 			</Button>
 		</Row>
-	</Container>
+	</StyledContainer>
 );

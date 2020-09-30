@@ -6,6 +6,11 @@ import { Input } from './Input';
 import { Text } from './Text';
 import { Button } from './Button';
 import { createTask } from '../Utils/Task';
+import styled from 'styled-components';
+
+const StyledContainer = styled(Container)`
+	flex-basis: 70px;
+`;
 
 export class NewTaskForm extends React.Component {
 	initialState = {
@@ -19,7 +24,7 @@ export class NewTaskForm extends React.Component {
 
 	render() {
 		return (
-			<Container>
+			<StyledContainer>
 				<Row>
 					<Input
 						type='text'
@@ -38,7 +43,7 @@ export class NewTaskForm extends React.Component {
 						<Feather.Plus />
 					</Button>
 				</Row>
-			</Container>
+			</StyledContainer>
 		);
 	}
 

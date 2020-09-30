@@ -1,21 +1,22 @@
 import React from 'react';
 import * as Feather from 'react-feather';
 import { Container } from './Container';
-import { Row, Column } from './FlexBox';
-import { Text } from './Text';
+import { Row } from './FlexBox';
 import { Button } from './Button';
-import { Clock } from './Clock';
+import styled from 'styled-components';
+import TaskInfo from './TaskInfo';
+
+const StyledContainer = styled(Container)`
+	flex-basis: 70px;
+`;
 
 export default ({ todo, onClickRight }) => (
-	<Container color={todo.color}>
+	<StyledContainer color={todo.color}>
 		<Row>
-			<Column style={{ justifyContent: 'space-evenly' }}>
-				<Text title={todo.name}>{todo.name}</Text>
-				<Clock ms={todo.estDuration} />
-			</Column>
+			<TaskInfo task={todo} />
 			<Button onClick={onClickRight}>
 				<Feather.ArrowRight />
 			</Button>
 		</Row>
-	</Container>
+	</StyledContainer>
 );

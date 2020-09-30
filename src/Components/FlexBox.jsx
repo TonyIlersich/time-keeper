@@ -7,7 +7,9 @@ export const FlexBox = styled.div`
 	flex-basis: 0px;
 	box-sizing: border-box;
 	min-width: 0px;
-	justify-content: ${props => props.center ? 'center' : 'flex-start'};
+	justify-content: ${props => props.center
+		? 'center'
+		: (props.spread ? 'space-between' : 'flex-start')};
 `;
 
 export const Column = styled(FlexBox)`

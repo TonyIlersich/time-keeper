@@ -8,6 +8,10 @@ import { Button } from './Button';
 import { createTodo } from '../Utils/Todo';
 import styled from 'styled-components';
 
+const StyledContainer = styled(Container)`
+	flex-basis: 70px;
+`;
+
 const StyledRow = styled(Row)`
 	align-items: center;
 `;
@@ -36,7 +40,7 @@ export default class NewTodoForm extends React.Component {
 
 	render() {
 		return (
-			<Container>
+			<StyledContainer>
 				<StyledRow>
 					<NameInput
 						type='text'
@@ -64,7 +68,7 @@ export default class NewTodoForm extends React.Component {
 						<Feather.Plus />
 					</Button>
 				</StyledRow>
-			</Container>
+			</StyledContainer>
 		);
 	}
 

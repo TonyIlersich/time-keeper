@@ -7,6 +7,7 @@ const ButtonContainer = styled(Container)`
 	background-color: #dddddd;
 	cursor: pointer;
 	transition: background-color .2s;
+	margin: 0;
 
 	&:hover {
 		background-color: #eeeeee;
@@ -18,8 +19,8 @@ const ButtonContainer = styled(Container)`
 	}
 `;
 
-export const Button = props => (
-	<ButtonContainer onClick={props.onClick}>
-		{props.children}
+export const Button = ({ children, onClick }) => (
+	<ButtonContainer onClick={onClick}>
+		{children}
 	</ButtonContainer>
 );
