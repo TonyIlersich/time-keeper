@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import React from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
 import FixedAspect from './FixedAspect';
@@ -7,6 +8,7 @@ const minDegree = 15;
 const minValue = totalValue * minDegree / 360;
 
 export const DailyPieChart = ({ tasks }) => {
+	const now = dayjs();
 	const other = {
 		title: 'other',
 		value: tasks.filter(t => t.duration < minValue).reduce((sum, t) => sum + t.duration, 0),
@@ -22,6 +24,19 @@ export const DailyPieChart = ({ tasks }) => {
 				color: t.color,
 			})),
 	];
+	const totalTimeTracked = data.reduce((sum, slice) => sum + slice.value, 0);
+	const untracked = {
+		title: 'untracked',
+		value: now.diff(now.startOf('day')) - totalTimeTracked,
+		color: '#aaaaaa',
+	};
+	const remaining = {
+		title: 'remaining',
+		value: totalValue - totalTimeTracked - untracked.value,
+		color: 'lightgray',
+	};
+	data.unshift(untracked);
+	data.push(remaining);
 	return (
 		<FixedAspect ratio={16 / 9}>
 			<PieChart
