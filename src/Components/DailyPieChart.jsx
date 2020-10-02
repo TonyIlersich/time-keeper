@@ -14,7 +14,7 @@ export const DailyPieChart = ({ tasks }) => {
 		value: tasks.filter(t => t.duration < minValue).reduce((sum, t) => sum + t.duration, 0),
 		color: 'black',
 	};
-	const data = [
+	let data = [
 		...(other.value > 10000 ? [other] : []),
 		...tasks.filter(t => t.duration >= minValue)
 			.sort((t1, t2) => t1.duration - t2.duration)
@@ -37,6 +37,10 @@ export const DailyPieChart = ({ tasks }) => {
 	};
 	data.unshift(untracked);
 	data.push(remaining);
+	data = data.map(slice => ({
+		...slice,
+		title: `${slice.title} (${(slice.value / totalValue * 24).toFixed(1)}h)`,
+	}));
 	return (
 		<FixedAspect ratio={16 / 9}>
 			<PieChart
