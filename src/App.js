@@ -9,10 +9,15 @@ import timezone from 'dayjs/plugin/timezone';
 import TopBar from './Components/TopBar';
 import utc from 'dayjs/plugin/utc';
 import { createTask } from './Utils/Task';
+import styled from 'styled-components';
 
 dayjs.extend(utc)
 dayjs.extend(timezone);
 dayjs.tz.setDefault('America/New_York');
+
+const Body = styled(Row)`
+	padding: 6px;
+`;
 
 class App extends React.Component {
 	handlerId = null;
@@ -37,8 +42,12 @@ class App extends React.Component {
 	render() {
 		return (
 			<Column>
-				<TopBar onClickTrash={this.onClear} />
-				<Row>
+				<TopBar
+					totalTodo={this.state.todos.reduce((sum, todo) => sum + todo.estDuration, 0)}
+					totalDoing={this.state.tasks.reduce((sum, task) => sum + (task.estDuration ? task.estDuration - task.duration : 0), 0)}
+					onClickTrash={this.onClear}
+				/>
+				<Body>
 					<Column style={{ flexGrow: 3 / 2 }}>
 						<Row>
 							<TodoListView
@@ -60,7 +69,7 @@ class App extends React.Component {
 					<Column>
 						<DailyPieChart tasks={this.state.tasks} />
 					</Column>
-				</Row>
+				</Body>
 			</Column>
 		);
 	}
