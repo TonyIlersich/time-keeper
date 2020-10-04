@@ -1,29 +1,19 @@
 import React from 'react';
 import * as Feather from 'react-feather';
-import { Container } from './Container';
-import { Row } from './FlexBox';
 import { Button } from './Button';
-import styled from 'styled-components';
 import TaskInfo from './TaskInfo';
-
-const StyledContainer = styled(Container)`
-	flex-basis: 70px;
-`;
-
-const StyledButton = styled(Button)`
-	margin-left: 4px;
-`;
+import { RowCard } from './RowCard';
+import { Gap } from './FlexBox';
 
 export default ({ todo, onPromote, onDelete }) => (
-	<StyledContainer color={todo.color}>
-		<Row>
-			<TaskInfo task={todo} />
-			<StyledButton onClick={() => onPromote(todo)}>
-				<Feather.ArrowRight />
-			</StyledButton>
-			<StyledButton onClick={() => onDelete(todo)}>
-				<Feather.X />
-			</StyledButton>
-		</Row>
-	</StyledContainer>
+	<RowCard color={todo.color}>
+		<TaskInfo task={todo} />
+		<Gap width={10} />
+		<Button onClick={() => onPromote(todo)}>
+			<Feather.ArrowRight />
+		</Button>
+		<Button onClick={() => onDelete(todo)}>
+			<Feather.X />
+		</Button>
+	</RowCard>
 );

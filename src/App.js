@@ -40,12 +40,15 @@ class App extends React.Component {
 	}
 
 	render() {
+		const now = dayjs();
 		return (
 			<Column>
 				<TopBar
+					now={now}
 					totalTodo={this.state.todos.reduce((sum, todo) => sum + todo.estDuration, 0)}
 					totalDoing={this.state.tasks.reduce((sum, task) => sum + (task.estDuration ? task.estDuration - task.duration : 0), 0)}
-					onClickTrash={this.onClear}
+					onClearTodos={() => this.save({ todos: [] })}
+					onClearTasks={() => this.save({ tasks: [] })}
 				/>
 				<Body>
 					<Column style={{ flexGrow: 3 / 2 }}>

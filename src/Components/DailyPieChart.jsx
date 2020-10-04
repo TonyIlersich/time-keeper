@@ -46,6 +46,7 @@ export const DailyPieChart = ({ tasks }) => {
 			<PieChart
 				background='lightgray'
 				data={data}
+				startAngle={-90}
 				totalValue={totalValue}
 				label={labelProps => labelProps.dataEntry.title}
 				labelStyle={idx => ({

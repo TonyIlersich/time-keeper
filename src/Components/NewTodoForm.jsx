@@ -1,20 +1,11 @@
 import React from 'react';
 import * as Feather from 'react-feather';
-import { Container } from './Container';
-import { Row } from './FlexBox';
 import { Input } from './Input';
 import { Text } from './Text';
 import { Button } from './Button';
 import { createTodo } from '../Utils/Todo';
 import styled from 'styled-components';
-
-const StyledContainer = styled(Container)`
-	flex-basis: 70px;
-`;
-
-const StyledRow = styled(Row)`
-	align-items: center;
-`;
+import { RowCard } from './RowCard';
 
 const NameInput = styled(Input)`
 	margin-right: 16px;
@@ -40,35 +31,33 @@ export default class NewTodoForm extends React.Component {
 
 	render() {
 		return (
-			<StyledContainer>
-				<StyledRow>
-					<NameInput
-						type='text'
-						value={this.state.name}
-						onKeyDown={this.onKeyDown}
-						onChange={ev => this.setState({ name: ev.target.value })}
-					/>
-					<TimeInput
-						type='text'
-						value={this.state.hh}
-						maxLength={2}
-						onKeyDown={this.onKeyDown}
-						onChange={ev => this.setState({ hh: ev.target.value.substr(0, 2) })}
-					/>
-					<Text>:</Text>
-					<TimeInput
-						type='text'
-						value={this.state.mm}
-						maxLength={2}
-						onKeyDown={this.onKeyDown}
-						onChange={ev => this.setState({ mm: ev.target.value.substr(0, 2) })}
-					/>
-					<Text title={this.state.error}>{this.state.error}</Text>
-					<Button onClick={this.onCreate}>
-						<Feather.Plus />
-					</Button>
-				</StyledRow>
-			</StyledContainer>
+			<RowCard>
+				<NameInput
+					type='text'
+					value={this.state.name}
+					onKeyDown={this.onKeyDown}
+					onChange={ev => this.setState({ name: ev.target.value })}
+				/>
+				<TimeInput
+					type='text'
+					value={this.state.hh}
+					maxLength={2}
+					onKeyDown={this.onKeyDown}
+					onChange={ev => this.setState({ hh: ev.target.value.substr(0, 2) })}
+				/>
+				<Text style={{ alignSelf: 'center' }}>:</Text>
+				<TimeInput
+					type='text'
+					value={this.state.mm}
+					maxLength={2}
+					onKeyDown={this.onKeyDown}
+					onChange={ev => this.setState({ mm: ev.target.value.substr(0, 2) })}
+				/>
+				<Text title={this.state.error}>{this.state.error}</Text>
+				<Button onClick={this.onCreate}>
+					<Feather.Plus />
+				</Button>
+			</RowCard>
 		);
 	}
 

@@ -7,9 +7,7 @@ export const FlexBox = styled.div`
 	flex-basis: 0px;
 	box-sizing: border-box;
 	min-width: 0px;
-	justify-content: ${props => props.center
-		? 'center'
-		: (props.spread ? 'space-between' : 'flex-start')};
+	justify-content: ${props => props.justify || 'initial'};
 	align-items: ${props => props.align || 'initial'};
 `;
 
@@ -19,4 +17,9 @@ export const Column = styled(FlexBox)`
 
 export const Row = styled(FlexBox)`
 	flex-direction: row;
+`;
+
+export const Gap = styled.div`
+	width: ${props => props.width ? `${props.width}px` : 'initial'};
+	height: ${props => props.height ? `${props.height}px` : 'initial'};
 `;
