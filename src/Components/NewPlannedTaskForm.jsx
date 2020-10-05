@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { RowCard } from './RowCard';
 import { createTask, TaskStatus } from '../Utils/Task';
 import { Column, Gap, Row } from './FlexBox';
+import NewTaskFormContainer from './NewTaskFormContainer';
 
 const TimeInput = styled(Input)`
 	padding: 0px;
@@ -35,41 +36,30 @@ export default class NewPlannedTaskForm extends React.Component {
 
 	render() {
 		return (
-			<RowCard>
-				<Column>
-					<Row>
-						<ErrorText title={this.state.error}>{this.state.error}</ErrorText>
-					</Row>
-					<Row align='flex-end'>
-						<Input
-							type='text'
-							value={this.state.name}
-							onKeyDown={this.onKeyDown}
-							onChange={ev => this.setState({ error: this.initialState.error, name: ev.target.value })}
-						/>
-						<Gap width={12} />
-						<TimeInput
-							type='text'
-							value={this.state.hh}
-							maxLength={2}
-							onKeyDown={this.onKeyDown}
-							onChange={ev => this.setState({ hh: ev.target.value.substr(0, 2) })}
-						/>
-						<ColonText>:</ColonText>
-						<TimeInput
-							type='text'
-							value={this.state.mm}
-							maxLength={2}
-							onKeyDown={this.onKeyDown}
-							onChange={ev => this.setState({ mm: ev.target.value.substr(0, 2) })}
-						/>
-					</Row>
-				</Column>
+			<NewTaskFormContainer error={this.state.error} onCreate={this.onCreate}>
+				<Input
+					type='text'
+					value={this.state.name}
+					onKeyDown={this.onKeyDown}
+					onChange={ev => this.setState({ error: this.initialState.error, name: ev.target.value })}
+				/>
 				<Gap width={12} />
-				<Button onClick={this.onCreate}>
-					<Feather.Plus />
-				</Button>
-			</RowCard>
+				<TimeInput
+					type='text'
+					value={this.state.hh}
+					maxLength={2}
+					onKeyDown={this.onKeyDown}
+					onChange={ev => this.setState({ hh: ev.target.value.substr(0, 2) })}
+				/>
+				<ColonText>:</ColonText>
+				<TimeInput
+					type='text'
+					value={this.state.mm}
+					maxLength={2}
+					onKeyDown={this.onKeyDown}
+					onChange={ev => this.setState({ mm: ev.target.value.substr(0, 2) })}
+				/>
+			</NewTaskFormContainer>
 		);
 	}
 

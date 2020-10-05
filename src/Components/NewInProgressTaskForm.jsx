@@ -1,10 +1,7 @@
 import React from 'react';
-import * as Feather from 'react-feather';
-import { RowCard } from './RowCard';
 import { Input } from './Input';
-import { Text } from './Text';
-import { Button } from './Button';
 import { createTask, TaskStatus } from '../Utils/Task';
+import NewTaskFormContainer from './NewTaskFormContainer';
 
 export class NewInProgressTaskForm extends React.Component {
 	initialState = {
@@ -18,26 +15,24 @@ export class NewInProgressTaskForm extends React.Component {
 
 	render() {
 		return (
-			<RowCard>
+			<NewTaskFormContainer error={this.state.error} onCreate={this.onCreate}>
 				<Input
 					type='text'
 					value={this.state.name}
-					onKeyDown={e => {
-						if (e.key === 'Enter' && !e.repeat) {
-							e.preventDefault();
-							e.stopPropagation();
-							this.onCreate();
-						}
-					}}
-					onChange={ev => this.setState({ name: ev.target.value })}
+					onKeyDown={this.onKeyDown}
+					onChange={ev => this.setState({ error: this.initialState.error, name: ev.target.value })}
 				/>
-				<Text>{this.state.error}</Text>
-				<Button onClick={this.onCreate}>
-					<Feather.Plus />
-				</Button>
-			</RowCard>
+			</NewTaskFormContainer>
 		);
 	}
+
+	onKeyDown = e => {
+		if (e.key === 'Enter' && !e.repeat) {
+			e.preventDefault();
+			e.stopPropagation();
+			this.onCreate();
+		}
+	};
 
 	onCreate = () => {
 		if (!this.state.name) return;
