@@ -1,12 +1,9 @@
 import React from 'react';
-import * as Feather from 'react-feather';
 import { Input } from './Input';
-import { ErrorText, Text } from './Text';
-import { Button } from './Button';
+import { Text } from './Text';
 import styled from 'styled-components';
-import { RowCard } from './RowCard';
 import { createTask, TaskStatus } from '../Utils/Task';
-import { Column, Gap, Row } from './FlexBox';
+import { Gap } from './FlexBox';
 import NewTaskFormContainer from './NewTaskFormContainer';
 
 const TimeInput = styled(Input)`
