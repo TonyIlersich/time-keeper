@@ -4,9 +4,9 @@ import { RowCard } from './RowCard';
 import { Input } from './Input';
 import { Text } from './Text';
 import { Button } from './Button';
-import { createTask } from '../Utils/Task';
+import { createTask, TaskStatus } from '../Utils/Task';
 
-export class NewTaskForm extends React.Component {
+export class NewInProgressTaskForm extends React.Component {
 	initialState = {
 		name: '',
 		error: '',
@@ -42,7 +42,7 @@ export class NewTaskForm extends React.Component {
 	onCreate = () => {
 		if (!this.state.name) return;
 		try {
-			this.props.onCreate(createTask({ name: this.state.name }));
+			this.props.onCreate(createTask({ name: this.state.name, status: TaskStatus.InProgress }));
 			this.setState(this.initialState);
 		} catch (err) {
 			this.setState({ error: err.message });

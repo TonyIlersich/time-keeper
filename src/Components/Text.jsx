@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Colors from '../Styles/Colors';
 
 export const Text = styled.span`
 	text-align: center;
@@ -10,10 +11,17 @@ export const Text = styled.span`
 	box-sizing: border-box;
 	font-weight: ${props => props.bold ? 'bold' : 'normal'};
 	font-family: 'Consolas';
+	color: ${Colors.Text};
 `;
 
 export const Header = styled(Text)`
 	font-size: 36px;
 	font-weight: bolder;
 	pointer-events: none;
+`;
+
+export const ErrorText = styled(Text)`
+	font-weight: bolder;
+	font-size: 14px;
+	color: ${Colors.Error};
 `;

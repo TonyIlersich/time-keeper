@@ -12,7 +12,7 @@ export const DailyPieChart = ({ tasks }) => {
 	const other = {
 		title: 'other',
 		value: tasks.filter(t => t.duration < minValue).reduce((sum, t) => sum + t.duration, 0),
-		color: 'black',
+		color: '#666666',
 	};
 	let data = [
 		...(other.value > 10000 ? [other] : []),
@@ -42,7 +42,7 @@ export const DailyPieChart = ({ tasks }) => {
 		title: `${slice.title} (${(slice.value / totalValue * 24).toFixed(1)}h)`,
 	}));
 	return (
-		<FixedAspect ratio={16 / 9}>
+		<FixedAspect ratio={2}>
 			<PieChart
 				background='lightgray'
 				data={data}

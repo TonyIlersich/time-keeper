@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Colors from '../Styles/Colors';
 import { Row } from './FlexBox';
 
 const RowCardContainer = styled(Row)`
@@ -7,7 +8,7 @@ const RowCardContainer = styled(Row)`
 	flex-grow: 0;
 	margin: 4px;
 	padding: 12px;
-	background-color: ${props => props.color || 'transparent'};
+	background-color: ${props => props.color || Colors.Highlight};
 `;
 
 export const RowCard = ({ children, color }) => (

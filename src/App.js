@@ -1,21 +1,23 @@
 import { DailyPieChart } from './Components/DailyPieChart';
 import { Row, Column } from './Components/FlexBox';
 import TaskListView from './Components/TaskListView';
-import TodoListView from './Components/TodoListView';
 import { withCookies } from 'react-cookie';
 import dayjs from 'dayjs';
 import React from 'react';
 import timezone from 'dayjs/plugin/timezone';
 import TopBar from './Components/TopBar';
 import utc from 'dayjs/plugin/utc';
-import { createTask } from './Utils/Task';
+import { TaskStatus } from './Utils/Task';
 import styled from 'styled-components';
+import NewPlannedTaskForm from './Components/NewPlannedTaskForm';
+import { NewInProgressTaskForm } from './Components/NewInProgressTaskForm';
+import { DividerRow } from './Components/Divider';
 
 dayjs.extend(utc)
 dayjs.extend(timezone);
 dayjs.tz.setDefault('America/New_York');
 
-const Body = styled(Row)`
+const Body = styled(Column)`
 	padding: 6px;
 `;
 
@@ -26,7 +28,6 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			todos: props.cookies.get('todos') || [],
 			tasks: props.cookies.get('tasks') || [],
 		};
 	}
@@ -41,109 +42,108 @@ class App extends React.Component {
 
 	render() {
 		const now = dayjs();
+		const tasksPlanned = this.state.tasks.filter(t => t.status === TaskStatus.Planned)
 		return (
 			<Column>
 				<TopBar
 					now={now}
-					totalTodo={this.state.todos.reduce((sum, todo) => sum + todo.estDuration, 0)}
-					totalDoing={this.state.tasks.reduce((sum, task) => sum + (task.estDuration ? task.estDuration - task.duration : 0), 0)}
-					onClearTodos={() => this.save({ todos: [] })}
-					onClearTasks={() => this.save({ tasks: [] })}
+					totalPlanned={tasksPlanned.reduce((sum, task) => sum + task.estDuration, 0)}
+					totalInProgress={this.getEstTimeRemainingInProgress()}
+					totalCompleted={this.getTimeSaved()}
 				/>
 				<Body>
-					<Column style={{ flexGrow: 3 / 2 }}>
-						<Row>
-							<TodoListView
-								todos={this.state.todos}
-								onCreateTodo={this.onCreateTodo}
-								onPromoteTodo={this.onPromoteTodo}
-								onDeleteTodo={this.onDeleteTodo}
-							/>
+					<Row>
+						<Column>
 							<TaskListView
-								tasks={this.state.tasks}
-								onSwitchTask={this.onSwitchTask}
-								onPauseTask={this.onPauseTask}
-								onCreateTask={this.onCreateTask}
-								onDeleteTask={this.onDeleteTask}
+								tasks={this.state.tasks.filter(t => t.status === TaskStatus.Planned)}
+								onPromote={this.onPromoteTask}
+								onDelete={this.onDeleteTask}
 							/>
-							{/* TODO: create list for completions */}
-						</Row>
-					</Column>
-					<Column>
-						<DailyPieChart tasks={this.state.tasks} />
-					</Column>
+							<NewPlannedTaskForm onCreate={this.onCreateTaskPlanned} />
+						</Column>
+						<Column>
+							<TaskListView
+								tasks={this.state.tasks.filter(t => t.status === TaskStatus.InProgress)}
+								onPlay={this.onSwitchTask}
+								onPause={this.onPauseTask}
+								onDelete={this.onDeleteTask}
+								onPromote={this.onPromoteTask}
+							/>
+							<NewInProgressTaskForm onCreate={this.onCreateTaskInProgress} />
+						</Column>
+						<Column>
+							<TaskListView
+								tasks={this.state.tasks.filter(t => t.status === TaskStatus.Completed)}
+								onDelete={this.onDeleteTask}
+							/>
+						</Column>
+					</Row>
+					<DividerRow />
+					<DailyPieChart tasks={this.state.tasks} />
 				</Body>
-			</Column>
+			</Column >
 		);
 	}
 
-	onDeleteTodo = todo => {
-		this.save({ todos: this.state.todos.filter(t => t.name !== todo.name) });
+	getEstTimeRemainingInProgress() {
+		return this.state.tasks
+			.filter(t => t.status === TaskStatus.InProgress)
+			.reduce((sum, t) => sum + (t.estDuration - t.duration || 0), 0);
 	}
 
-	// TODO: prevent todo v. task name conflict
-	onCreateTodo = todo => {
-		if (this.state.todos.some(t => t.name.toLowerCase() === todo.name.toLowerCase())) {
-			throw new Error(`Todo name "${todo.name}" is already in use.`);
-		};
-		const todos = [...this.state.todos];
-		todos.push(todo);
-		this.save({ todos });
-	};
-
-	onPromoteTodo = todo => {
-		const todos = this.state.todos.filter(t => t.name !== todo.name);
-		const tasks = this.state.tasks.map(t => ({ ...t, active: false }));
-		tasks.push(createTask({ ...todo, active: true }));
-		this.save({ todos, tasks });
-	};
+	getTimeSaved() {
+		return this.state.tasks
+			.filter(t => t.status === TaskStatus.Completed)
+			.reduce((sum, t) => sum + (t.estDuration - t.duration || 0), 0);
+	}
 
 	onTick = () => {
 		const now = dayjs();
 		const lastUpdateTime = this.props.cookies.get('lastUpdateTime') || now;
+		this.props.cookies.set('lastUpdateTime', now.clone());
 		if (dayjs().startOf('day').isAfter(lastUpdateTime)) {
-			console.log('here');
 			this.onNewDay();
 		}
-		this.props.cookies.set('lastUpdateTime', now.clone());
-		const deltaMs = now.diff(lastUpdateTime);
 		this.save({
 			tasks: this.state.tasks.map(t => ({
 				...t,
-				...(t.active ? { duration: t.duration + deltaMs } : {}),
+				duration: t.active ? t.duration + now.diff(lastUpdateTime) : t.duration,
 			})),
 		});
 	};
 
 	onNewDay = () => {
 		// TODO: pause tasks, push to cookies, duplicate active task
-		// this.dayHistory.push(this.state.tasks);
-		// this.setState({
-		// 	tasks: [],
-		// });
 	};
 
 	onDeleteTask = task => {
 		this.save({ tasks: this.state.tasks.filter(t => t.name !== task.name) });
 	}
 
-	onCreateTask = task => {
+	onCreateTaskPlanned = task => {
 		if (this.state.tasks.some(t => t.name.toLowerCase() === task.name.toLowerCase())) {
-			throw new Error(`Task name "${task.name}" is already in use.`);
+			throw new Error(`You already have a task named "${task.name}".`);
 		};
-		const tasks = this.state.tasks.map(t => ({
-			...t,
-			active: false,
-		}));
-		tasks.push({ ...task, active: true });
-		this.save({ tasks });
+		this.save({ tasks: [...this.state.tasks, task] });
 	};
 
-	onPauseTask = () => {
+	onCreateTaskInProgress = task => {
+		if (this.state.tasks.some(t => t.name.toLowerCase() === task.name.toLowerCase())) {
+			throw new Error(`You already have a task named "${task.name}".`);
+		};
+		this.save({
+			tasks: [
+				...this.state.tasks.map(t => ({ ...t, active: false })),
+				{ ...task, active: true },
+			],
+		});
+	};
+
+	onPauseTask = task => {
 		this.save({
 			tasks: this.state.tasks.map(t => ({
 				...t,
-				active: false,
+				active: t === task ? false : t.active,
 			})),
 		});
 	};
@@ -157,17 +157,33 @@ class App extends React.Component {
 		});
 	};
 
-	onClear = () => {
-		this.props.cookies.remove('lastUpdateTime');
-		this.save({ todos: [], tasks: [] });
+	onPromoteTask = task => {
+		let tasks;
+		switch (task.status) {
+			case TaskStatus.Planned:
+				tasks = this.state.tasks.map(t => t.name === task.name
+					? { ...t, active: true, status: TaskStatus.InProgress }
+					: { ...t, active: false }
+				);
+				break;
+			case TaskStatus.InProgress:
+				tasks = this.state.tasks.map(t => t.name === task.name
+					? { ...t, active: false, status: TaskStatus.Completed }
+					: t
+				);
+				break;
+			case TaskStatus.Completed:
+				throw new Error('cannot promote completed task');
+			default:
+				throw new Error(`invalid task status: ${task.status}`);
+		}
+		this.save({ tasks });
 	};
 
-	save({ todos, tasks }) {
-		todos || (todos = this.state.todos);
+	save({ tasks }) {
 		tasks || (tasks = this.state.tasks);
-		this.props.cookies.set('todos', todos);
 		this.props.cookies.set('tasks', tasks);
-		this.setState({ todos, tasks });
+		this.setState({ tasks });
 	}
 }
 
