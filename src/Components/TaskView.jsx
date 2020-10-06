@@ -5,8 +5,11 @@ import TaskInfo from './TaskInfo';
 import { RowCard } from './RowCard';
 import { Gap } from './FlexBox';
 
-export const TaskView = ({ task, onPause, onPlay, onDelete, onPromote }) => (
-	<RowCard color={task.color}>
+export const TaskView = ({ selected, task, onToggleSelected, onPause, onPlay, onDelete, onPromote }) => (
+	<RowCard
+		selected={selected}
+		color={task.color}
+		onClick={() => onToggleSelected && onToggleSelected(task)}>
 		<TaskInfo task={task} />
 		<Gap width={12} />
 		{onPlay && onPause && <Button onClick={() => task.active ? onPause(task) : onPlay(task)}>
@@ -18,5 +21,5 @@ export const TaskView = ({ task, onPause, onPlay, onDelete, onPromote }) => (
 		{onDelete && <Button onClick={() => onDelete(task)}>
 			<Feather.X />
 		</Button>}
-	</RowCard>
+	</RowCard >
 );

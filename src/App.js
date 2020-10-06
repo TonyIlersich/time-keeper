@@ -29,6 +29,7 @@ class App extends React.Component {
 		super(props);
 		this.state = {
 			tasks: props.cookies.get('tasks') || [],
+			selectionMap: {},
 		};
 	}
 
@@ -42,20 +43,21 @@ class App extends React.Component {
 
 	render() {
 		const now = dayjs();
-		const tasksPlanned = this.state.tasks.filter(t => t.status === TaskStatus.Planned)
 		return (
 			<Column>
 				<TopBar
 					now={now}
-					totalPlanned={tasksPlanned.reduce((sum, task) => sum + task.estDuration, 0)}
-					totalInProgress={this.getEstTimeRemainingInProgress()}
+					totalPlanned={this.getEstTimeRemaining(TaskStatus.Planned)}
+					totalInProgress={this.getEstTimeRemaining(TaskStatus.InProgress)}
 					totalCompleted={this.getTimeSaved()}
 				/>
 				<Body>
 					<Row>
 						<Column>
 							<TaskListView
+								selectionMap={this.state.selectionMap}
 								tasks={this.state.tasks.filter(t => t.status === TaskStatus.Planned)}
+								onToggleSelected={this.onToggleSelected}
 								onPromote={this.onPromoteTask}
 								onDelete={this.onDeleteTask}
 							/>
@@ -63,7 +65,9 @@ class App extends React.Component {
 						</Column>
 						<Column>
 							<TaskListView
+								selectionMap={this.state.selectionMap}
 								tasks={this.state.tasks.filter(t => t.status === TaskStatus.InProgress)}
+								onToggleSelected={this.onToggleSelected}
 								onPlay={this.onSwitchTask}
 								onPause={this.onPauseTask}
 								onDelete={this.onDeleteTask}
@@ -73,7 +77,9 @@ class App extends React.Component {
 						</Column>
 						<Column>
 							<TaskListView
+								selectionMap={this.state.selectionMap}
 								tasks={this.state.tasks.filter(t => t.status === TaskStatus.Completed)}
+								//onToggleSelected={this.onToggleSelected}
 								onDelete={this.onDeleteTask}
 							/>
 						</Column>
@@ -85,10 +91,11 @@ class App extends React.Component {
 		);
 	}
 
-	getEstTimeRemainingInProgress() {
-		return this.state.tasks
-			.filter(t => t.status === TaskStatus.InProgress)
-			.reduce((sum, t) => sum + (t.estDuration - t.duration || 0), 0);
+	getEstTimeRemaining(status) {
+		let filtered = this.state.tasks.filter(t => t.status === status);
+		const selected = filtered.filter(t => this.state.selectionMap[t.name]);
+		if (selected.length > 0) filtered = selected;
+		return filtered.reduce((sum, t) => sum + (t.estDuration ? t.estDuration - (t.duration || 0) : 0), 0);
 	}
 
 	getTimeSaved() {
@@ -116,9 +123,15 @@ class App extends React.Component {
 		// TODO: pause tasks, push to cookies, duplicate active task
 	};
 
+	onToggleSelected = task => {
+		const selectionMap = { ...this.state.selectionMap };
+		selectionMap[task.name] = !selectionMap[task.name];
+		this.setState({ selectionMap });
+	};
+
 	onDeleteTask = task => {
 		this.save({ tasks: this.state.tasks.filter(t => t.name !== task.name) });
-	}
+	};
 
 	onCreateTaskPlanned = task => {
 		if (this.state.tasks.some(t => t.name.toLowerCase() === task.name.toLowerCase())) {

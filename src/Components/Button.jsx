@@ -23,7 +23,11 @@ const ButtonContainer = styled(Row)`
 `;
 
 export const Button = ({ className, children, onClick }) => (
-	<ButtonContainer className={className} onClick={onClick}>
+	<ButtonContainer className={className} onClick={e => {
+		e.preventDefault();
+		e.stopPropagation();
+		onClick();
+	}}>
 		{children}
 	</ButtonContainer>
 );

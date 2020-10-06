@@ -1,7 +1,8 @@
 export default {
 	Background: '#fff',
+	Border: '#444',
 	DarkBackground: '#ddd',
-	Text: '#333',
-	Highlight: '#eee',
 	Error: '#f00',
+	Highlight: '#eee',
+	Text: '#333',
 };
