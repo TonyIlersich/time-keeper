@@ -35,7 +35,7 @@ export const DailyPieChart = ({ tasks }) => {
 		value: totalValue - totalTimeTracked - untracked.value,
 		color: 'lightgray',
 	};
-	data.unshift(untracked);
+	if (untracked.value > 10000) data.unshift(untracked);
 	data.push(remaining);
 	data = data.map(slice => ({
 		...slice,
