@@ -120,7 +120,17 @@ class App extends React.Component {
 	};
 
 	onNewDay = () => {
-		// TODO: pause tasks, push to cookies, duplicate active task
+		// TODO: maybe keep task history in future
+		this.save({
+			tasks: this.state.tasks
+				.filter(t => t.status !== TaskStatus.Completed)
+				.map(t => t.status === TaskStatus.InProgress
+					? {
+						...t,
+						duration: 0,
+						estDuration: (t.estDuration ? t.estDuration - t.duration : 0),
+					} : t),
+		});
 	};
 
 	onToggleSelected = task => {
