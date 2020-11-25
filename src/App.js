@@ -49,7 +49,6 @@ class App extends React.Component {
 					now={now}
 					totalPlanned={this.getEstTimeRemaining(TaskStatus.Planned)}
 					totalInProgress={this.getEstTimeRemaining(TaskStatus.InProgress)}
-					totalCompleted={this.getTimeSaved()}
 				/>
 				<Body>
 					<Row>
@@ -70,18 +69,9 @@ class App extends React.Component {
 								onToggleSelected={this.onToggleSelected}
 								onPlay={this.onSwitchTask}
 								onPause={this.onPauseTask}
-								onDelete={this.onDeleteTask}
-								onPromote={this.onPromoteTask}
+								onCheck={this.onPromoteTask}
 							/>
 							<NewInProgressTaskForm onCreate={this.onCreateTaskInProgress} />
-						</Column>
-						<Column>
-							<TaskListView
-								selectionMap={this.state.selectionMap}
-								tasks={this.state.tasks.filter(t => t.status === TaskStatus.Completed)}
-								//onToggleSelected={this.onToggleSelected}
-								onDelete={this.onDeleteTask}
-							/>
 						</Column>
 					</Row>
 					<DividerRow />
