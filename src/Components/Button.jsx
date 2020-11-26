@@ -4,7 +4,7 @@ import { Row } from './FlexBox';
 
 const ButtonContainer = styled(Row)`
 	min-width: 44px;
-	background-color: #eeeeee;
+	background-color: #eee0;
 	cursor: pointer;
 	transition: background-color .2s;
 	height: 44px;
@@ -13,12 +13,12 @@ const ButtonContainer = styled(Row)`
 	justify-content: center;
 	
 	&:hover {
-		background-color: #ffffff;
+		background-color: #fffc;
 		transition: background-color 0s;
 	}
 
 	&:active {
-		background-color: #bbbbbb;
+		background-color: #dddc;
 	}
 `;
 
